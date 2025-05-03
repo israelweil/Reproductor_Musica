@@ -4,3 +4,7 @@ project(Reprocuctor_Musica)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Reprocuctor_Musica main.cpp)
+
+target_include_directories(Reprocuctor_Musica
+        PRIVATE ${PROJECT_SOURCE_DIR}/include
+)
