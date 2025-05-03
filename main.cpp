@@ -32,6 +32,7 @@ void insertarFinal(string nombre, string artista, int duracion){
         cabeza -> ant = cabeza;
     }else{
         Cancion * aux = cabeza;
+        //Nodo * aux = cabeza -> ant; Alternativa para el while
         while(aux -> sig != cabeza){
             aux = aux -> sig;
         }
@@ -288,8 +289,78 @@ void reproductor(){  //Mi parte
     }while(opcion != 3);
 }
 
+void menu(){
+    int opc, duracion, pos;
+    string nombre, artista;
+
+    cout << "Bienvenido, Menu de opciones: " << endl;
+
+    do {
+        cout << "\nTu playList:" << endl;
+        mostrar();
+        cout << "\nSeleccione la opción que desee:\n"
+             << "1. Agregar Canción\n"
+             << "2. Eliminar Canción\n"
+             << "3. Buscar Canción\n"
+             << "4. Reproducir Canción\n"
+             << "5. Salir\n";
+        cin >> opc;
+
+        int subOpc;
+        switch(opc){
+            case 1: 
+                cout << "Agregar Canción\n"
+                     << "1. Al final\n"
+                     << "2. En alguna posición\n";
+                cin >> subOpc;
+
+                if(subOpc == 1){
+                    pedirDatosCancion(nombre, artista, duracion);
+                    insertarFinal(nombre, artista, duracion);
+                } else if(subOpc == 2){
+                    pedirDatosCancion(nombre, artista, duracion);
+                    cout << "Posición: "; cin >> pos;
+                    insertarPosicion(nombre, artista, duracion, pos);
+                } else {
+                    cout << "Opción inválida.\n";
+                }
+                break;
+            case 2: 
+                cout << "Eliminar Canción\n"
+                     << "1. Al final\n"
+                     << "2. En alguna posición\n";
+                cin >> subOpc;
+
+                if(subOpc == 1){
+                    eliminarFinal();
+                } else if(subOpc == 2){
+                    cout << "Posición: "; cin >> pos;
+                    eliminarPosicion(pos);
+                } else {
+                    cout << "Opción inválida.\n";
+                }
+                break;
+            case 3:
+                cout << "Función de Leo\n";
+                break;
+            case 4:
+                cout << "Reproductor:\n";
+                reproductor();
+                break;
+            case 5:
+                cout << "¡Hasta luego!\n";
+                break;
+            default:
+                cout << "Opción no válida. Intente de nuevo.\n";
+                break;
+        }
+    } while(opc != 5);
+}
+
+
 int main(){
     inicializar();
+    menu();
     destruir();
     return 0;
 }
