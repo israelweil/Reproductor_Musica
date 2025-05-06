@@ -1,11 +1,16 @@
 #include<iostream>
 using namespace std;
-
+#include "json.hpp"
+#include <fstream>
 struct Cancion{
     string Nombre, Artista;
     int Duracion;
     Cancion * sig;
     Cancion * ant;
+    Cancion()
+      : Nombre(), Artista(), Duracion(0),
+        sig(nullptr), ant(nullptr)
+    {}
 
     Cancion(string nombre, string artista,int duracion){
         Nombre = nombre;
@@ -154,10 +159,10 @@ void mostrar(){
     Cancion * aux = cabeza;
     int numCancion=1;
     do{
-        cout <<numCancion<< " > Canción: " << aux->Nombre 
-        << " | Artista: " << aux->Artista 
-        << " | Duración: " << aux->Duracion << "s" << endl;   
-        aux = aux -> sig; 
+        cout <<numCancion<< " > Canción: " << aux->Nombre
+        << " | Artista: " << aux->Artista
+        << " | Duración: " << aux->Duracion << "s" << endl;
+        aux = aux -> sig;
         ++numCancion;
     } while(aux != cabeza);
     cout<<endl;
@@ -177,11 +182,77 @@ void destruir(){
     cout<<"Se eliminó la PlayList"<<endl;
 }
 
+
+// Recorre la lista circular y llena un vector
+vector<Cancion> exportarLista() {
+    vector<Cancion> v;
+    if (empty()) return v;
+    Cancion* nodo = cabeza;
+    do {
+        // copia sin punteros (porque JSON no serializa punteros)
+        Cancion copia{ nodo->Nombre, nodo->Artista, nodo->Duracion };
+        v.push_back(copia);
+        nodo = nodo->sig;
+    } while (nodo != cabeza);
+    return v;
+}
+
+// Borra la lista actual y reconstruye desde un vector
+void importarLista(vector<Cancion> const& v) {
+    destruir();
+    inicializar();
+    for (auto const& c : v) {
+        insertarFinal(c.Nombre, c.Artista, c.Duracion);
+    }
+}
+// convertir Cancion a JSON
+void to_json(nlohmann::json& j, const Cancion& c) {
+    j = nlohmann::json{
+            {"Nombre", c.Nombre},
+            {"Artista", c.Artista},
+            {"Duracion", c.Duracion}
+    };
+}
+
+// Función para convertir JSON a Cancion
+void from_json(const nlohmann::json& j, Cancion& c) {
+    j.at("Nombre").get_to(c.Nombre);
+    j.at("Artista").get_to(c.Artista);
+    j.at("Duracion").get_to(c.Duracion);
+}
+// Guarda en Musica.json
+void guardarJSON(const string& archivo = "Musica.json") {
+    auto vec = exportarLista();
+    nlohmann::json j = vec;
+    ofstream ofs(archivo);
+    if(!ofs) {
+        cerr << "No se pudo abrir " << archivo << " para escribir\n";
+        return;
+    }
+    ofs << j.dump(4);
+    cout << "Guardado JSON en " << archivo << "\n";
+}
+
+// Carga desde Musica.json
+void cargarJSON(const string& archivo = "Musica.json") {
+    ifstream ifs(archivo);
+    if (!ifs) {
+        cerr << "No se encontró " << archivo << ", lista vacía\n";
+        return;
+    }
+    nlohmann::json j;
+    ifs >> j;
+    auto vec = j.get<vector<Cancion>>();
+    importarLista(vec);
+    cout << "Cargados " << vec.size() << " canciones desde JSON\n";
+}
+
+
 void pedirDatosCancion(string &nombre, string &artista, int &duracion){  //opcion a considerar
     cin.ignore();
     cout<<"Nombre de la canción: "; getline(cin, nombre);
     cout<<"Nombre del artista: "; getline(cin, artista);
-    cout<<"Duración de la canción (en segundos): "; 
+    cout<<"Duración de la canción (en segundos): ";
     while (!(cin >> duracion) || duracion <= 0) {
         cout << "Caracter inválido. Ingrese una duración válida: ";
         cin.clear();
@@ -219,7 +290,7 @@ void reproductor(){  //Mi parte
     cout<<"1.Elegir canción\n"
         <<"2.Reproducir canción inicial\n"
         <<"3.Volver al menú principal"<<endl;
-    cout<<"Selección: "; 
+    cout<<"Selección: ";
 
     while (!(cin >> opcion) || opcion < 1 || opcion > 3) {
         cout << "Caracter inválido. Ingresa una opción valida: ";
@@ -251,22 +322,22 @@ void reproductor(){  //Mi parte
     do {
         if (opcion != 3 && actual != nullptr) {
             cout << "\n==================================\n";
-            cout << "   🎶 Reproduciendo ahora \n";
+            cout << "   ?? Reproduciendo ahora \n";
             cout << "-----------------------------------\n";
-            cout << "   🎵 Canción : " << actual->Nombre << endl;
-            cout << "   🎤 Artista : " << actual->Artista << endl;
-            cout << "   ⏱️  Duración: " << actual->Duracion << " segundos" << endl;
+            cout << "   ?? Canción : " << actual->Nombre << endl;
+            cout << "   ?? Artista : " << actual->Artista << endl;
+            cout << "   ?  Duración: " << actual->Duracion << " segundos" << endl;
             cout << "===================================\n";
         }
         if (actual != nullptr && actual->sig != nullptr && actual->sig != actual) {
-            cout << "   ⏭ Siguiente canción \n";
+            cout << "   ? Siguiente canción \n";
             cout << "-----------------------------------\n";
-            cout << "   🎵 Canción : " << actual->sig->Nombre << endl;
-            cout << "   🎤 Artista : " << actual->sig->Artista << endl;
-            cout << "   ⏱️  Duración: " << actual->sig->Duracion << " segundos" << endl;
+            cout << "   ?? Canción : " << actual->sig->Nombre << endl;
+            cout << "   ?? Artista : " << actual->sig->Artista << endl;
+            cout << "   ?  Duración: " << actual->sig->Duracion << " segundos" << endl;
             cout << "===================================\n";
         }
-        
+
         cout<<"\nAcciones: "<<endl;
         cout<<"1.Siguiente\n"
                 <<"2.Anterior\n"
@@ -277,7 +348,7 @@ void reproductor(){  //Mi parte
             cin.clear();
             cin.ignore(1000, '\n');
         }
-        
+
         switch(opcion){
             case 1: actual = actual->sig;
                 break;
@@ -285,7 +356,7 @@ void reproductor(){  //Mi parte
                 break;
             case 3: cout << "\nSaliendo del reproductor...\n";
                 break;
-        }   
+        }
     }while(opcion != 3);
 }
 
@@ -308,7 +379,7 @@ void menu(){
 
         int subOpc;
         switch(opc){
-            case 1: 
+            case 1:
                 cout << "Agregar Canción\n"
                      << "1. Al final\n"
                      << "2. En alguna posición\n";
@@ -325,7 +396,7 @@ void menu(){
                     cout << "Opción inválida.\n";
                 }
                 break;
-            case 2: 
+            case 2:
                 cout << "Eliminar Canción\n"
                      << "1. Al final\n"
                      << "2. En alguna posición\n";
@@ -360,7 +431,9 @@ void menu(){
 
 int main(){
     inicializar();
+    cargarJSON();
     menu();
+    guardarJSON();
     destruir();
-    return 0;
+    return 0;
 }
