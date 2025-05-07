@@ -56,6 +56,13 @@ build CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj: CXX_COMPILER__Reprocuctor_
   OBJECT_DIR = CMakeFiles\Reprocuctor_Musica.dir
   OBJECT_FILE_DIR = CMakeFiles\Reprocuctor_Musica.dir
 
+build CMakeFiles/Reprocuctor_Musica.dir/src/Reproductor.cpp.obj: CXX_COMPILER__Reprocuctor_Musica_unscanned_Debug C$:/Users/cland/CLionProjects/Reprocuctor_Musica/src/Reproductor.cpp || cmake_object_order_depends_target_Reprocuctor_Musica
+  DEP_FILE = CMakeFiles\Reprocuctor_Musica.dir\src\Reproductor.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/cland/CLionProjects/Reprocuctor_Musica/include
+  OBJECT_DIR = CMakeFiles\Reprocuctor_Musica.dir
+  OBJECT_FILE_DIR = CMakeFiles\Reprocuctor_Musica.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Reprocuctor_Musica
@@ -64,7 +71,7 @@ build CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj: CXX_COMPILER__Reprocuctor_
 #############################################
 # Link the executable Reprocuctor_Musica.exe
 
-build Reprocuctor_Musica.exe: CXX_EXECUTABLE_LINKER__Reprocuctor_Musica_Debug CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj
+build Reprocuctor_Musica.exe: CXX_EXECUTABLE_LINKER__Reprocuctor_Musica_Debug CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj CMakeFiles/Reprocuctor_Musica.dir/src/Reproductor.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Reprocuctor_Musica.dir
