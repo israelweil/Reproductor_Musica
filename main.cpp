@@ -142,11 +142,13 @@ void mostrar() {
     }
     Cancion* aux = cabeza;
     int i = 1;
+    
     do {
         cout << i++ << ". " << aux->Nombre << " - " << aux->Artista
              << " (" << aux->Duracion << "s)" << endl;
         aux = aux->sig;
     } while (aux != cabeza);
+    cout<<endl;
 }
 
 void destruir() {
@@ -233,52 +235,90 @@ Cancion* obtenerPosCancion(int pos) {
     return aux;
 }
 
-void reproductor() {
-    if (empty()) {
-        cout << "La lista esta vacia." << endl;
+void reproductor(){  //Mi parte
+    cout<<endl;
+    if(empty()) {
+        cout<<"La playlist está vacía."<<endl;
         return;
-    }
+    } 
     int opcion, pos;
     Cancion* actual;
+
+    cout<<"Reproductor de música\n"<<endl;
     mostrar();
-    cout << "1. Elegir cancion\n2. Reproducir primera\n3. Salir\n";
-    cout << "Seleccion: ";
-    while (!(cin >> opcion) || opcion < 1 || opcion > 3) {
-        cout << "Opcion invalida: ";
+
+    //cout <<"Menu inicial"<<endl;
+    cout<<"1.Elegir canción\n"
+        <<"2.Reproducir canción inicial\n"
+        <<"3.Volver al menú principal"<<endl;
+    cout<<"Selección: "; 
+
+    while(!(cin >> opcion) || opcion < 1 || opcion > 3) {
+        cout<<"Caracter inválido. Ingresa una opción valida: ";
         cin.clear();
         cin.ignore(1000, '\n');
     }
-    switch (opcion) {
-        case 1:
-            cout << "Posicion: ";
+
+    switch(opcion){
+        case 1: 
+            cout<<"Inserte la posicion de la cancion que desea reproducir: ";
             while (!(cin >> pos) || pos <= 0) {
-                cout << "Posicion invalida: ";
+                cout << "Caracter inválido. Ingrese una posición válida: ";
                 cin.clear();
                 cin.ignore(1000, '\n');
             }
             actual = obtenerPosCancion(pos);
+            if(actual == nullptr) {
+                cout << "No se pudo encontrar la canción en esa posición." << endl;
+                return;
+            }
             break;
         case 2:
             actual = cabeza;
             break;
-        default:
+        case 3: cout << "\nSaliendo del reproductor...\n";
             return;
+            break;
     }
     do {
-        cout << "\nReproduciendo: " << actual->Nombre
-             << " - " << actual->Artista
-             << " (" << actual->Duracion << "s)" << endl;
-        cout << "1. Siguiente\n2. Anterior\n3. Salir\nSeleccion: ";
+        if (opcion != 3 && actual != nullptr) {
+            cout << "\n==================================\n";
+            cout << "   🎶 Reproduciendo ahora \n";
+            cout << "-----------------------------------\n";
+            cout << "   🎵 Canción : " << actual->Nombre << endl;
+            cout << "   🎤 Artista : " << actual->Artista << endl;
+            cout << "   ⏱️  Duración: " << actual->Duracion << " segundos" << endl;
+            cout << "===================================\n";
+        }
+        if (actual != nullptr && actual->sig != nullptr && actual->sig != actual) {
+            cout << "   ⏭ Siguiente canción \n";
+            cout << "-----------------------------------\n";
+            cout << "   🎵 Canción : " << actual->sig->Nombre << endl;
+            cout << "   🎤 Artista : " << actual->sig->Artista << endl;
+            cout << "   ⏱️  Duración: " << actual->sig->Duracion << " segundos" << endl;
+            cout << "===================================\n";
+        }
+        
+        cout<<"\nAcciones: "<<endl;
+        cout<<"1.Siguiente\n"
+                <<"2.Anterior\n"
+                <<"3.Salir"<<endl;
+        cout<<"Selección: ";
         while (!(cin >> opcion) || opcion < 1 || opcion > 3) {
-            cout << "Opcion invalida: ";
+            cout << "Caracter inválido. Ingresa una opción valida: ";
             cin.clear();
             cin.ignore(1000, '\n');
         }
-        switch (opcion) {
-            case 1: actual = actual->sig; break;
-            case 2: actual = actual->ant; break;
-        }
-    } while (opcion != 3);
+        
+        switch(opcion){
+            case 1: actual = actual->sig;
+                break;
+            case 2: actual = actual->ant;
+                break;
+            case 3: cout << "\nSaliendo del reproductor...\n";
+                break;
+        }   
+    }while(opcion != 3);
 }
 
 void menu() {
