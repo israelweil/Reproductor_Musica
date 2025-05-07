@@ -1,3 +1,6 @@
 # ninja log v6
 410	30214	7682158821622227	CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj	f5de4bcdffb2305f
 30216	35921	7682159119669963	Reprocuctor_Musica.exe	7a2b7373b02b937a
+1083	5835	7682961430422302	CMakeFiles/Reprocuctor_Musica.dir/src/Reproductor.cpp.obj	d2c688b791cb7549
+1052	38361	7682961426072056	CMakeFiles/Reprocuctor_Musica.dir/main.cpp.obj	f5de4bcdffb2305f
+38361	46118	7682961799159569	Reprocuctor_Musica.exe	13b9a36e294553e1
