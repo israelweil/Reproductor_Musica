@@ -432,7 +432,7 @@ void menu(){
 int main(){
     inicializar();
     cargarJSON();
-    menu();
+    menu();     
     guardarJSON();
     destruir();
     return 0;
